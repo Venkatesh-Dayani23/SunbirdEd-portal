@@ -6,7 +6,8 @@ import { SlickModule } from 'ngx-slick';
 import { ProfileRoutingModule } from './profile-routing.module';
 import {
   ProfilePageComponent, ProfileBadgeComponent, UpdateContactDetailsComponent,
-  AccountRecoveryInfoComponent, CreateUserComponent, ChooseUserComponent, SubmitTeacherDetailsComponent
+  AccountRecoveryInfoComponent, CreateUserComponent, ChooseUserComponent, SubmitTeacherDetailsComponent,
+  DeleteUserComponent,DeleteAccountComponent,
 } from './components';
 import { SuiSelectModule, SuiModalModule, SuiAccordionModule, SuiPopupModule, SuiDropdownModule,
   SuiProgressModule, SuiRatingModule, SuiCollapseModule } from 'ng2-semantic-ui-v9';
@@ -23,6 +24,7 @@ import { CsLibInitializerService } from '../../service/CsLibInitializer/cs-lib-i
 import { CommonFormElementsModule } from '@project-sunbird/common-form-elements-v9';
 import {LocationModule} from '../location';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 
 export const csCourseServiceFactory = (csLibInitializerService: CsLibInitializerService) => {
@@ -65,7 +67,9 @@ export const csCertificateServiceFactory = (csLibInitializerService: CsLibInitia
    AccountRecoveryInfoComponent,
    CreateUserComponent,
    ChooseUserComponent,
-   SubmitTeacherDetailsComponent],
+   SubmitTeacherDetailsComponent,
+   DeleteUserComponent,
+   DeleteAccountComponent],
   providers: [
     {provide: 'CS_COURSE_SERVICE', useFactory: csCourseServiceFactory, deps: [CsLibInitializerService]},
     {provide: 'CS_CERTIFICATE_SERVICE', useFactory: csCertificateServiceFactory, deps: [CsLibInitializerService]}

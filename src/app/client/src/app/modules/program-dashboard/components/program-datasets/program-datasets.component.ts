@@ -249,9 +249,6 @@ export class DatasetsComponent implements OnInit, OnDestroy {
 
   public programSelection($event) {
     this.reportForm.reset();
-    this.displayFilters = {};
-    this.districts = []
-    this.organisations = [];
     const program = this.programs.filter(data => {
       if (data._id == $event.value) {
         return data;
@@ -274,8 +271,6 @@ export class DatasetsComponent implements OnInit, OnDestroy {
     this.districts = []
     this.organisations = [];
     this.resetConfigFilters();
-    delete this.displayFilters['District'];
-    delete this.displayFilters['Organisation'];
     this.globalDistrict = this.globalOrg = undefined;
     if (this.programSelected && this.reportForm.value && this.reportForm.value['solution']) {
       const solution = this.solutions.filter(data => {
@@ -291,8 +286,8 @@ export class DatasetsComponent implements OnInit, OnDestroy {
       this.reportForm.controls.solution.setValue($event.value);
       this.reportForm.controls.programName.setValue(program);
       this.displayFilters['Resource'] = [$event?.source?.triggerValue]
-      if (solution[0].isRubricDriven === true && solution[0].type === 'observation') {
-        const type = solution[0].criteriaLevelReport ? solution[0].type + '_with_rubric' : solution[0].type + '_with_rubric_no_criteria_level_report'
+      if (solution[0].isRubricDriven == true && solution[0].type == 'observation') {
+        const type = solution[0].type + '_with_rubric';
         this.getReportTypes(this.programSelected, type);
       } else {
         this.getReportTypes(this.programSelected, solution[0].type);
@@ -316,16 +311,16 @@ export class DatasetsComponent implements OnInit, OnDestroy {
         "reportconfig.report_status": "active"
       }
 
-      this.dashboardReport$ = this.renderReport(filtersForReport).pipe(
-        catchError(err => {
-          console.error('Error while rendering report', err);
-          this.noResultMessage = {
-            'messageText': _.get(err, 'messageText') || 'messages.stmsg.m0131'
-          };
-          this.noResult = true;
-          return of({});
-        })
-      );
+      // this.dashboardReport$ = this.renderReport(filtersForReport).pipe(
+      //   catchError(err => {
+      //     console.error('Error while rendering report', err);
+      //     this.noResultMessage = {
+      //       'messageText': _.get(err, 'messageText') || 'messages.stmsg.m0131'
+      //     };
+      //     this.noResult = true;
+      //     return of({});
+      //   })
+      // );
 
       if (types && types.length > 0) {
         types.forEach(element => {
@@ -531,7 +526,6 @@ export class DatasetsComponent implements OnInit, OnDestroy {
     this.goToPrevLocation = false;
     this.showPopUpModal = true;
     this.globalDistrict = this.globalOrg = undefined;
-    this.displayFilters = {};
     this.timeRangeInit();
     this.resetConfigFilters();
   }
@@ -548,13 +542,9 @@ export class DatasetsComponent implements OnInit, OnDestroy {
   }
 
   districtSelection($event) {
-    this.globalDistrict = $event.value;
+    this.globalDistrict = $event.value
     this.reportForm.controls.districtName.setValue($event.value);
     this.displayFilters['District'] = [$event?.source?.triggerValue]
-    this.tag =  _.get(this.reportForm, 'controls.solution.value')+ '_' + this.userId+'_'+ _.toLower(_.trim([$event?.source?.triggerValue]," "));
-    this.reportForm.controls.reportType.setValue('');
-    this.resetConfigFilters();
-    this.loadReports();
   }
 
   organisationSelection($event) {
@@ -569,11 +559,7 @@ export class DatasetsComponent implements OnInit, OnDestroy {
     if(this.selectedReport.configurableFilters){
       this.pdFilters = this.selectedReport.uiFilters;
       this.pdFilters.map(filter => {
-        if(filter['controlType'] === 'number'){
-          this.configuredFilters[filter['reference']] = filter['defaultValue'] as number -1
-        }else if(filter['controlType'] === 'multi-select'){
-          this.configuredFilters[filter['reference']] = undefined
-        }
+        this.configuredFilters[filter['reference']] = filter['defaultValue'] as number -1
       })
     }
   }
@@ -584,30 +570,15 @@ export class DatasetsComponent implements OnInit, OnDestroy {
   }
 
   pdFilterChanged($event){
-    if($event.data){
-      const [reference, value]= [Object.keys($event.data),Object.values($event.data)] ;
-      if($event.controlType === 'number'){
-        if([0,null].includes(value[0] as number) || value[0] < 0){
-          this.configuredFilters[reference[0]] = undefined;
-        }else{
-          this.configuredFilters[reference[0]] = value[0] as number -1;
-        }
-      }else if($event.controlType === 'multi-select'){
-          if((value[0] as string[]).length){
-            this.configuredFilters[reference[0]] = value[0]
-          }else{
-            this.configuredFilters[reference[0]] = undefined;
-          }
-      }
+    const [reference, value]= [Object.keys($event),Object.values($event)] ;
+    if([0,null].includes(value[0] as number) || value[0] < 0){
+      this.configuredFilters[reference[0]] = undefined;
+    }else{
+      this.configuredFilters[reference[0]] = value[0] as number -1;
     }
   }
 
   addFilters() {
-    this.pdFilters.map(filter => {
-     if(filter['controlType'] === 'multi-select' && this.configuredFilters[filter['reference']] === undefined){
-      this.configuredFilters[filter['reference']] = filter['options']
-      }
-    })
     let filterKeysObj = {
       program_id: _.get(this.reportForm, 'controls.programName.value'),
       solution_id: _.get(this.reportForm, 'controls.solution.value'),
@@ -622,9 +593,9 @@ export class DatasetsComponent implements OnInit, OnDestroy {
 
     this.selectedReport['filters'].map(data => {
       keys.filter(key => {
-        return data.dimension === key && (_.has(data,'value') ? data.value = filterKeysObj[key] : data.values = filterKeysObj[key]);
+        return data.dimension == key && (data.value = filterKeysObj[key]);
       })
-      if (data.value !== undefined || data.values !== undefined) {
+      if (data.value !== undefined) {
         this.filter.push(data);
       }
     });
@@ -674,6 +645,7 @@ export class DatasetsComponent implements OnInit, OnDestroy {
                 }
 
               });
+
               if (dataFound && dataFound.length > 0) {
                 this.popup = false;
                 this.isProcessed = true;
@@ -735,12 +707,8 @@ export class DatasetsComponent implements OnInit, OnDestroy {
     let requestStatus = true;
     const selectedReportList = [];
     _.forEach(this.onDemandReportData, (value) => {
-      if (value.datasetConfig.type == this.selectedReport.datasetId){
-        _.forEach(value.datasetConfig.params.filters, (filter) => {
-          if(['solutionId','solution_id'].includes(filter['dimension']) && filter.value  === this.selectedSolution){
-            selectedReportList.push(value);
-          }
-        });
+      if (value.datasetConfig.type == this.selectedReport.datasetId && value.datasetConfig.params.solutionId == this.selectedSolution) {
+        selectedReportList.push(value);
       }
     });
     const sortedReportList = _.sortBy(selectedReportList, [(data) => {

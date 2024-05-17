@@ -340,6 +340,19 @@ export class UserService {
     return _.cloneDeep(this._userProfile);
   }
 
+ //add this
+ public deleteUser() {
+  const options = {
+    url: this.config.urlConFig.URLS.USER.DELETE,
+    data: {
+      request: {
+        'userId': this.userid
+      }
+    }
+  };
+  return this.learnerService.post(options);
+}
+
   get rootOrgId() {
     return this._rootOrgId;
   }
