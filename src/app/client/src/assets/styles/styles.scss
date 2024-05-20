@@ -13,6 +13,9 @@
 
 
 // base structure @import "~@project-sunbird/sb-styles/assets/mixins/mixins";
+// from sb-styles
+@use "~@project-sunbird/sb-styles/assets/varIndex" as *;
+@use "~@project-sunbird/sb-styles/assets/mixins/mixins" as *;
 @import "./mixins/mixins";
 @import "~@project-sunbird/sb-styles/assets/variables";
 @import "./layout/layout";

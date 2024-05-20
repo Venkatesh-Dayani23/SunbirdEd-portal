@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { OtpService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService, CacheService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService } from '@sunbird/shared';
 import { Subject } from 'rxjs';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import { MatDialog } from '@angular/material/dialog';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import {CacheService} from 'ng2-cache-service'
 @Component({
   selector: 'app-anonymous-delete-account',
   templateUrl: './anonymous-delete-account.component.html',
@@ -21,7 +21,7 @@ export class AnonymousDeleteAccountComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<any>();
   @Input() dialogProps;
   @Input() deepLink: string = ''
-  contactTypeForm: UntypedFormGroup;
+  contactTypeForm: FormGroup;
   enableSubmitBtn = false;
   showUniqueError = '';
 

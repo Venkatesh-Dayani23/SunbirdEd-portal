@@ -6,7 +6,7 @@
 */
 
 import { Component,OnInit,OnDestroy,Input,Output,EventEmitter } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { _ } from 'lodash-es';
 import { UserService,OtpService } from '@sunbird/core';
 import { ResourceService,ServerResponse,ToasterService,ConfigService,CacheService } from '@sunbird/shared';

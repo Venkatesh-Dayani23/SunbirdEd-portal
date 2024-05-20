@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { UserService, OtpService } from '@sunbird/core';
-import { ResourceService, ServerResponse, ToasterService, ConfigService,CacheService } from '@sunbird/shared';
+import { ResourceService, ServerResponse, ToasterService, ConfigService } from '@sunbird/shared';
+import {CacheService} from 'ng2-cache-service'
 import { Subject } from 'rxjs';
 import { ProfileService } from '../../services';
 import { IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
@@ -22,7 +23,7 @@ export class DeleteAccountComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<any>();
   @Input() dialogProps;
   @Input() deepLink:string = ''
-  contactTypeForm: UntypedFormGroup;
+  contactTypeForm: FormGroup;
   enableSubmitBtn = false;
   showUniqueError = '';
 
